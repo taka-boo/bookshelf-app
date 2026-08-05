@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreReviewRequest;
+use App\Http\Requests\UpdateReviewRequest;
+use App\Models\Book;
+use App\Models\Review;
+
+class ReviewController extends Controller
+{
+    // レビュー投稿
+    public function store(StoreReviewRequest $request, Book $book)
+    {
+        $validated = $request->validated();
+        $validated['user_id'] = auth()->id();
+        $validated['book_id'] = $book->id;
+
+        Review::create($validated);
+
+        return redirect()->route('books.show', $book)->with('success', 'レビューを投稿しました。');
+    }
+
+    // PG09: レビュー編集画面の表示
+    public function edit(Review $review)
+    {
+        $this->authorize('update', $review);
+
+        return view('reviews.edit', compact('review'));
+    }
+
+    // PG09: レビュー更新
+    public function update(UpdateReviewRequest $request, Review $review)
+    {
+        $this->authorize('update', $review);
+
+        $review->update($request->validated());
+
+        return redirect()->route('books.show', $review->book)->with('success', 'レビューを更新しました。');
+    }
+
+    // レビュー削除
+    public function destroy(Review $review)
+    {
+        $this->authorize('delete', $review);
+
+        $book = $review->book;
+        $review->delete();
+
+        return redirect()->route('books.show', $book)->with('success', 'レビューを削除しました。');
+    }
+
+    // レビューへのいいねトグル
+    public function like(Review $review)
+    {
+        $user = auth()->user();
+
+        if ($review->likedByUsers()->where('user_id', $user->id)->exists()) {
+            $review->likedByUsers()->detach($user->id);
+        } else {
+            $review->likedByUsers()->attach($user->id);
+        }
+
+        return back()->with('success', 'いいねを更新しました。');
+    }
+
+    // PG10: お気に入り一覧
+    public function favorites()
+    {
+        $books = auth()->user()->favoriteBooks()->paginate(10);
+
+        return view('favorites.index', compact('books'));
+    }
+
+    // お気に入りトグル（追加/解除）
+    public function favoriteToggle(Book $book)
+    {
+        $user = auth()->user();
+
+        if ($user->favoriteBooks()->where('book_id', $book->id)->exists()) {
+            $user->favoriteBooks()->detach($book->id);
+        } else {
+            $user->favoriteBooks()->attach($book->id);
+        }
+
+        return back()->with('success', 'お気に入りを更新しました。');
+    }
+
+    // PG11: ランキング
+    public function ranking()
+    {
+        $rankedBooks = Book::withAvg('reviews', 'rating')
+            ->having('reviews_avg_rating', '>', 0)
+            ->orderByDesc('reviews_avg_rating')
+            ->take(10)
+            ->get();
+
+        return view('ranking.index', compact('rankedBooks'));
+    }
+}
