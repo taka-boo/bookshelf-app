@@ -14,19 +14,16 @@ class ReadingPlan extends Model
     protected $fillable = [
         'user_id',
         'book_id',
-        'due_date',
+        'target_date',
         'status',
         'completed_at',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'due_date' => 'date',
-            'completed_at' => 'datetime',
-            'status' => ReadingPlanStatus::class,
-        ];
-    }
+    protected $casts = [
+        'target_date' => 'date',
+        'completed_at' => 'datetime',
+        'status' => ReadingPlanStatus::class,
+    ];
 
     public function user(): BelongsTo
     {

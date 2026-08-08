@@ -3,6 +3,9 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReadingPlanController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,6 +65,22 @@ Route::middleware('auth')->group(function () {
     /* PG10: お気に入り一覧 */
     Route::get('/favorites', [ReviewController::class, 'favorites'])->name('favorites.index');
     Route::post('/books/{book}/favorite', [ReviewController::class, 'favoriteToggle'])->name('favorites.toggle');
+
+    /* PG12: 読書計画一覧 */
+    Route::get('/reading-plans', [ReadingPlanController::class, 'index'])->name('reading-plans.index');
+    Route::get('/reading-plans/create', [ReadingPlanController::class, 'create'])->name('reading-plans.create');
+    Route::post('/reading-plans', [ReadingPlanController::class, 'store'])->name('reading-plans.store');
+    Route::get('/reading-plans/{readingPlan}/edit', [ReadingPlanController::class, 'edit'])->name('reading-plans.edit');
+    Route::put('/reading-plans/{readingPlan}', [ReadingPlanController::class, 'update'])->name('reading-plans.update');
+    Route::delete('/reading-plans/{readingPlan}', [ReadingPlanController::class, 'destroy'])->name('reading-plans.destroy');
+    Route::post('/reading-plans/{readingPlan}/complete', [ReadingPlanController::class, 'complete'])->name('reading-plans.complete');
+    Route::post('/reading-plans/{readingPlan}/reopen', [ReadingPlanController::class, 'reopen'])->name('reading-plans.reopen');
+
+    /* PG13: マイ読書レポート */
+    Route::get('/reports', [ReadingPlanController::class, 'report'])->name('reports.index');
+
+    /* PG14: 通知一覧 */
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 
 /* 公開ページ */
