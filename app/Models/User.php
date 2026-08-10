@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -44,26 +45,31 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /** ユーザーが登録した書籍を取得する */
     public function books()
     {
         return $this->hasMany(Book::class);
     }
 
+    /** ユーザーが投稿したレビューを取得する */
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
+    /** ユーザーのお気に入りを取得する */
     public function favoriteBooks()
     {
         return $this->belongsToMany(Book::class, 'favorites');
     }
 
+    /** ユーザーがいいねした書籍を取得する */
     public function likedReviews()
     {
         return $this->belongsToMany(Review::class, 'review_likes');
     }
 
+    /** ユーザーの読書計画を取得する */
     public function readingPlans()
     {
         return $this->hasMany(ReadingPlan::class);

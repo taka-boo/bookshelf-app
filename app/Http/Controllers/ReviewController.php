@@ -6,11 +6,13 @@ use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Book;
 use App\Models\Review;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ReviewController extends Controller
 {
     // レビュー投稿
-    public function store(StoreReviewRequest $request, Book $book)
+    public function store(StoreReviewRequest $request, Book $book): RedirectResponse
     {
         $validated = $request->validated();
         $validated['user_id'] = auth()->id();
@@ -22,7 +24,7 @@ class ReviewController extends Controller
     }
 
     // PG09: レビュー編集画面の表示
-    public function edit(Review $review)
+    public function edit(Review $review): View
     {
         $this->authorize('update', $review);
 
@@ -30,7 +32,7 @@ class ReviewController extends Controller
     }
 
     // PG09: レビュー更新
-    public function update(UpdateReviewRequest $request, Review $review)
+    public function update(UpdateReviewRequest $request, Review $review): RedirectResponse
     {
         $this->authorize('update', $review);
 
@@ -40,7 +42,7 @@ class ReviewController extends Controller
     }
 
     // レビュー削除
-    public function destroy(Review $review)
+    public function destroy(Review $review): RedirectResponse
     {
         $this->authorize('delete', $review);
 
@@ -51,7 +53,7 @@ class ReviewController extends Controller
     }
 
     // レビューへのいいねトグル
-    public function like(Review $review)
+    public function like(Review $review): View
     {
         $user = auth()->user();
 
@@ -65,7 +67,7 @@ class ReviewController extends Controller
     }
 
     // PG10: お気に入り一覧
-    public function favorites()
+    public function favorites(): View
     {
         $books = auth()->user()->favoriteBooks()->paginate(10);
 
@@ -73,7 +75,7 @@ class ReviewController extends Controller
     }
 
     // お気に入りトグル（追加/解除）
-    public function favoriteToggle(Book $book)
+    public function favoriteToggle(Book $book): View
     {
         $user = auth()->user();
 
@@ -87,7 +89,7 @@ class ReviewController extends Controller
     }
 
     // PG11: ランキング
-    public function ranking()
+    public function ranking(): View
     {
         $rankedBooks = Book::withAvg('reviews', 'rating')
             ->having('reviews_avg_rating', '>', 0)

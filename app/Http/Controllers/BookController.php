@@ -9,6 +9,7 @@ use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\RedirectResponse;
 
 class BookController extends Controller
 {
@@ -55,13 +56,13 @@ class BookController extends Controller
     }
 
     // PG02: 書籍詳細
-    public function show(Book $book)
+    public function show(Book $book): View
     {
         return view('books.show', compact('book'));
     }
 
     // PG03: 書籍登録画面の表示
-    public function create()
+    public function create(): View
     {
         $genres = Genre::orderBy('name')->get();
         $bookGenreIds = [];
@@ -70,7 +71,7 @@ class BookController extends Controller
     }
 
     // PG03: 書籍登録 (登録処理)
-    public function store(StoreBookRequest $request)
+    public function store(StoreBookRequest $request): RedirectResponse
     {
         $validated = $request->validated();
         $validated['user_id'] = auth()->id();
@@ -82,7 +83,7 @@ class BookController extends Controller
     }
 
     // PG04: 書籍編集画面の表示
-    public function edit(Book $book)
+    public function edit(Book $book): View
     {
         $this->authorize('update', $book);
 
@@ -93,7 +94,7 @@ class BookController extends Controller
     }
 
     // PG04: 書籍編集（更新処理）
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(UpdateBookRequest $request, Book $book): RedirectResponse
     {
         $this->authorize('update', $book);
 
@@ -106,7 +107,7 @@ class BookController extends Controller
     }
 
     // 書籍削除
-    public function destroy(Book $book)
+    public function destroy(Book $book): RedirectResponse
     {
         $this->authorize('delete', $book);
 

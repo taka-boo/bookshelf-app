@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreGenreRequest;
 use App\Http\Requests\UpdateGenreRequest;
 use App\Models\Genre;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class GenreController extends Controller
 {
     // PG05: ジャンル一覧
-    public function index()
+    public function index(): View
     {
         $genres = Genre::withCount('books')->orderBy('name')->get();
 
@@ -17,7 +19,7 @@ class GenreController extends Controller
     }
 
     // PG06: ジャンル詳細
-    public function show(Genre $genre)
+    public function show(Genre $genre): View
     {
         $books = $genre->books()->with('genres')->latest()->paginate(10);
 
@@ -25,13 +27,13 @@ class GenreController extends Controller
     }
 
     // PG07: ジャンル登録画面
-    public function create()
+    public function create(): View
     {
         return view('genres.create');
     }
 
     // PG07: ジャンル登録
-    public function store(StoreGenreRequest $request)
+    public function store(StoreGenreRequest $request): RedirectResponse
     {
         Genre::create($request->validated());
 
@@ -39,13 +41,13 @@ class GenreController extends Controller
     }
 
     // PG08: ジャンル編集画面
-    public function edit(Genre $genre)
+    public function edit(Genre $genre): View
     {
         return view('genres.edit', compact('genre'));
     }
 
     // PG08: ジャンル編集（更新処理）
-    public function update(UpdateGenreRequest $request, Genre $genre)
+    public function update(UpdateGenreRequest $request, Genre $genre): RedirectResponse
     {
         $genre->update($request->validated());
 
@@ -53,7 +55,7 @@ class GenreController extends Controller
     }
 
     // ジャンル削除
-    public function destroy(Genre $genre)
+    public function destroy(Genre $genre): RedirectResponse
     {
         if ($genre->books()->exists()) {
             return redirect()->route('genres.index')->with('error', '書籍が紐づいているジャンルは削除できません。');
