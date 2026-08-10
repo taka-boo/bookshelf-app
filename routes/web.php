@@ -31,6 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
 
+    /* PG: ISBN検索 */
+    Route::get('/books/isbn/{isbn}', [BookController::class, 'searchByIsbn'])->name('books.isbn');
+
     /* PG04: 書籍編集 */
     Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
     Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
@@ -82,6 +85,7 @@ Route::middleware('auth')->group(function () {
     /* PG14: 通知一覧 */
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
+
 });
 
 /* 公開ページ */

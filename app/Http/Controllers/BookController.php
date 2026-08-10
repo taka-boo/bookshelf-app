@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
 
 class BookController extends Controller
 {
@@ -112,5 +113,30 @@ class BookController extends Controller
         $book->delete();
 
         return redirect()->route('books.index')->with('success', '書籍を削除しました。');
+    }
+
+    // ISBN-13でGoogle Books APIから書籍情報を取得
+    public function searchByIsbn(string $isbn): \Illuminate\Http\JsonResponse
+    {
+        $response = Http::get('https://www.googleapis.com/books/v1/volumes', [
+            'q' => 'isbn:' . $isbn,
+            'key' => config('services.google_books.api_key'),
+        ]);
+
+        $data = $response->json();
+
+        if (empty($data['items'])) {
+            return response()->json(['error' => '書籍情報が見つかりませんでした。']);
+        }
+
+        $book = $data['items'][0]['volumeInfo'];
+
+        return response()->json([
+            'title' => $book['title'] ?? '',
+            'author' => isset($book['authors']) ? implode(', ', $book['authors']) : '',
+            'description' => $book['description'] ?? '',
+            'published_date' => $book['publishedDate'] ?? '',
+            'image_url' => $book['imageLinks']['thumbnail'] ?? '',
+        ]);
     }
 }
