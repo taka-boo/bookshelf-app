@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reading-plans/{readingPlan}/reopen', [ReadingPlanController::class, 'reopen'])->name('reading-plans.reopen');
 
     /* PG13: マイ読書レポート */
-    Route::get('/reports', [ReadingPlanController::class, 'report'])->name('reports.index');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
     /* PG14: 通知一覧 */
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
