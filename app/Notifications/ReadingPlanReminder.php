@@ -40,15 +40,15 @@ class ReadingPlanReminder extends Notification
         $targetDate = $this->readingPlan->target_date->format('Y-m-d');
 
         $body = match ($this->timing) {
-            'three_days_before' => "「{$bookTitle}」の目標日({$targetDate}）まであと3日です。",
-            'on_due_date' => "「{$bookTitle}」の目標日は本日({$targetDate}）です。",
-            'three_days_after' => "「{$bookTitle}」の目標日({$targetDate}）から３日過ぎています。",
-            default => "「{$bookTitle}」の目標日({$targetDate}）のお知らせです。",
+            'three_days_before' => "「{$bookTitle}」の読書期日（{$targetDate}）まで、あと3日です。",
+            'on_due_date' => "「{$bookTitle}」の読書期日は本日（{$targetDate}）です。",
+            'three_days_after' => "「{$bookTitle}」の読書期日（{$targetDate}）から3日が過ぎました。",
+            default => "「{$bookTitle}」の読書期日のお知らせです。",
         };
 
         return [
             'reading_plan_id' => $this->readingPlan->id,
-            'book_title' => $this->readingPlan->book->title,
+            'title' => '読書計画リマインダー',
             'body' => $body,
             'timing' => $this->timing,
         ];

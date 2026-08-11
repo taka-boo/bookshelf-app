@@ -87,4 +87,79 @@ class BookApiTest extends TestCase
         $response->assertStatus(204);
         $this->assertDatabaseMissing('books', ['id' => $book->id]);
     }
+
+    /** @test */
+    public function APIでキーワード検索とジャンル絞り込みを同時に使える()
+    {
+        $genre = Genre::factory()->create();
+        $book = Book::factory()->create(['title' => 'API検索テスト']);
+        $book->genres()->attach($genre->id);
+
+        $response = $this->getJson("/api/v1/books?keyword=API検索&genre_id={$genre->id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'data');
+    }
+
+    /** @test */
+    public function APIで書籍詳細にレビューと投稿者名が含まれる()
+    {
+        $user = User::factory()->create(['name' => 'APIテスト投稿者']);
+        $book = Book::factory()->create();
+        Review::factory()->create([
+            'book_id' => $book->id,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->getJson("/api/v1/books/{$book->id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.reviews.0.user_name', 'APIテスト投稿者');
+        $response->assertJsonStructure([
+            'data' => [
+                'reviews' => [
+                    ['id', 'rating', 'comment', 'user_name', 'created_at'],
+                ],
+            ],
+        ]);
+    }
+
+    /** @test */
+    public function 未認証でAPIの書き込みは401になる()
+    {
+        $response = $this->postJson('/api/v1/books', [
+            'title' => 'テスト',
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    /** @test */
+    public function 他人の書籍をAPIで更新すると403になる()
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        \Laravel\Sanctum\Sanctum::actingAs($other);
+        $book = Book::factory()->create(['user_id' => $owner->id]);
+        $genre = Genre::factory()->create();
+
+        $response = $this->putJson("/api/v1/books/{$book->id}", [
+            'title' => '不正な更新',
+            'author' => '不正',
+            'isbn' => $book->isbn,
+            'published_date' => '2026-01-01',
+            'genres' => [$genre->id],
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    /** @test */
+    public function APIで存在しないIDにアクセスすると日本語エラーのJSONが返る()
+    {
+        $response = $this->getJson('/api/v1/books/99999');
+
+        $response->assertStatus(404);
+        $response->assertJson(['error' => '書籍が見つかりませんでした']);
+    }
 }
