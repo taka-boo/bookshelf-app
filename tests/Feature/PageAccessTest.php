@@ -3,9 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Book;
-use App\Models\User;
 use App\Models\Genre;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class PageAccessTest extends TestCase
@@ -68,7 +69,7 @@ class PageAccessTest extends TestCase
     /** @test */
     public function 書籍一覧でジャンル絞り込みができる()
     {
-        $genre = \App\Models\Genre::factory()->create();
+        $genre = Genre::factory()->create();
         $book = Book::factory()->create();
         $book->genres()->attach($genre->id);
 
@@ -108,12 +109,12 @@ class PageAccessTest extends TestCase
     }
 
     /** @test */
-    public function ISBN検索で書籍情報を取得できる()
+    public function isb_n検索で書籍情報を取得できる()
     {
         $user = User::factory()->create();
 
-        \Illuminate\Support\Facades\Http::fake([
-            'www.googleapis.com/*' => \Illuminate\Support\Facades\Http::response([
+        Http::fake([
+            'www.googleapis.com/*' => Http::response([
                 'items' => [
                     [
                         'volumeInfo' => [
@@ -123,7 +124,7 @@ class PageAccessTest extends TestCase
                             'publishedDate' => '2026-01-01',
                             'imageLinks' => ['thumbnail' => 'https://example.com/image.jpg'],
                         ],
-                    ]
+                    ],
                 ],
             ]),
         ]);
@@ -135,12 +136,12 @@ class PageAccessTest extends TestCase
     }
 
     /** @test */
-    public function ISBN検索で書籍が見つからない場合エラーを返す()
+    public function isb_n検索で書籍が見つからない場合エラーを返す()
     {
         $user = User::factory()->create();
 
-        \Illuminate\Support\Facades\Http::fake([
-            'www.googleapis.com/*' => \Illuminate\Support\Facades\Http::response([
+        Http::fake([
+            'www.googleapis.com/*' => Http::response([
                 'totalItems' => 0,
             ]),
         ]);

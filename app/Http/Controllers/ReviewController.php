@@ -6,8 +6,8 @@ use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Book;
 use App\Models\Review;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
@@ -59,9 +59,11 @@ class ReviewController extends Controller
 
         if ($review->likedByUsers()->where('user_id', $user->id)->exists()) {
             $review->likedByUsers()->detach($user->id);
+
             return back()->with('removed', 'いいねを外しました。');
         } else {
             $review->likedByUsers()->attach($user->id);
+
             return back()->with('success', 'いいねしました。');
         }
     }
@@ -81,9 +83,11 @@ class ReviewController extends Controller
 
         if ($user->favoriteBooks()->where('book_id', $book->id)->exists()) {
             $user->favoriteBooks()->detach($book->id);
+
             return back()->with('removed', 'お気に入りを外しました。');
         } else {
             $user->favoriteBooks()->attach($book->id);
+
             return back()->with('success', 'お気に入りに追加しました。');
         }
     }

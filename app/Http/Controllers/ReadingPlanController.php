@@ -7,8 +7,8 @@ use App\Http\Requests\StoreReadingPlanRequest;
 use App\Http\Requests\UpdateReadingPlanRequest;
 use App\Models\Book;
 use App\Models\ReadingPlan;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ReadingPlanController extends Controller
@@ -21,7 +21,7 @@ class ReadingPlanController extends Controller
         $readingPlans = auth()->user()
             ->readingPlans()
             ->with('book')
-            ->when($currentStatus, fn($query) => $query->where('status', $currentStatus))
+            ->when($currentStatus, fn ($query) => $query->where('status', $currentStatus))
             ->latest('target_date')
             ->get();
 

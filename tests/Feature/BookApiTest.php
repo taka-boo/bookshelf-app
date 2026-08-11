@@ -7,8 +7,8 @@ use App\Models\Genre;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class BookApiTest extends TestCase
 {
@@ -89,7 +89,7 @@ class BookApiTest extends TestCase
     }
 
     /** @test */
-    public function APIでキーワード検索とジャンル絞り込みを同時に使える()
+    public function ap_iでキーワード検索とジャンル絞り込みを同時に使える()
     {
         $genre = Genre::factory()->create();
         $book = Book::factory()->create(['title' => 'API検索テスト']);
@@ -102,7 +102,7 @@ class BookApiTest extends TestCase
     }
 
     /** @test */
-    public function APIで書籍詳細にレビューと投稿者名が含まれる()
+    public function ap_iで書籍詳細にレビューと投稿者名が含まれる()
     {
         $user = User::factory()->create(['name' => 'APIテスト投稿者']);
         $book = Book::factory()->create();
@@ -125,7 +125,7 @@ class BookApiTest extends TestCase
     }
 
     /** @test */
-    public function 未認証でAPIの書き込みは401になる()
+    public function 未認証で_ap_iの書き込みは401になる()
     {
         $response = $this->postJson('/api/v1/books', [
             'title' => 'テスト',
@@ -135,11 +135,11 @@ class BookApiTest extends TestCase
     }
 
     /** @test */
-    public function 他人の書籍をAPIで更新すると403になる()
+    public function 他人の書籍を_ap_iで更新すると403になる()
     {
         $owner = User::factory()->create();
         $other = User::factory()->create();
-        \Laravel\Sanctum\Sanctum::actingAs($other);
+        Sanctum::actingAs($other);
         $book = Book::factory()->create(['user_id' => $owner->id]);
         $genre = Genre::factory()->create();
 
@@ -155,7 +155,7 @@ class BookApiTest extends TestCase
     }
 
     /** @test */
-    public function APIで存在しないIDにアクセスすると日本語エラーのJSONが返る()
+    public function ap_iで存在しない_i_dにアクセスすると日本語エラーの_jso_nが返る()
     {
         $response = $this->getJson('/api/v1/books/99999');
 

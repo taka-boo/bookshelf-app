@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Review;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class ReportController extends Controller
@@ -36,22 +36,22 @@ class ReportController extends Controller
     }
 
     /** 評価分布（★1〜★5の件数）を作成する */
-    private function buildRatingDistribution($reviews): \Illuminate\Support\Collection
+    private function buildRatingDistribution($reviews): Collection
     {
         $grouped = $reviews->groupBy('rating');
 
         return collect(range(1, 5))
-            ->map(fn($rating) => $grouped->get($rating)?->count() ?? 0);
+            ->map(fn ($rating) => $grouped->get($rating)?->count() ?? 0);
     }
 
     /** 高評価書籍TOP5を作成する（★4以上） */
     private function buildTopRatedBooks($reviews): array
     {
         return $reviews
-            ->filter(fn($review) => $review->rating >= 4)
+            ->filter(fn ($review) => $review->rating >= 4)
             ->sortByDesc('rating')
             ->take(5)
-            ->map(fn($review) => [
+            ->map(fn ($review) => [
                 'id' => $review->book->id,
                 'title' => $review->book->title,
                 'author' => $review->book->author,
@@ -65,15 +65,15 @@ class ReportController extends Controller
     private function buildGenreRatings($reviews): array
     {
         return $reviews
-            ->flatMap(fn($review) => $review->book->genres->map(
-                fn($genre) => [
+            ->flatMap(fn ($review) => $review->book->genres->map(
+                fn ($genre) => [
                     'genre_id' => $genre->id,
                     'genre_name' => $genre->name,
                     'rating' => $review->rating,
                 ]
             ))
             ->groupBy('genre_id')
-            ->map(fn($items) => [
+            ->map(fn ($items) => [
                 'id' => $items->first()['genre_id'],
                 'name' => $items->first()['genre_name'],
                 'count' => $items->count(),

@@ -4,11 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\BelongsTo;
-use Illuminate\Database\Eloquent\BelongsToMany;
-use Illuminate\Database\Eloquent\Hasmany;
-
-
 
 class Book extends Model
 {

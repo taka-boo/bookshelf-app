@@ -34,7 +34,7 @@ class ReadingPlanModelTest extends TestCase
     }
 
     /** @test */
-    public function 読書計画の状態はEnumでキャストされる()
+    public function 読書計画の状態は_enumでキャストされる()
     {
         $plan = ReadingPlan::factory()->create(['status' => 'in_progress']);
 
@@ -43,7 +43,7 @@ class ReadingPlanModelTest extends TestCase
     }
 
     /** @test */
-    public function Enumのバッジクラスが正しく返る()
+    public function enumのバッジクラスが正しく返る()
     {
         $this->assertSame('bg-blue-100 text-blue-800', ReadingPlanStatus::InProgress->badgeClass());
         $this->assertSame('bg-green-100 text-green-800', ReadingPlanStatus::Completed->badgeClass());

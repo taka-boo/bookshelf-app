@@ -6,10 +6,11 @@ use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
 
 class BookController extends Controller
 {
@@ -117,10 +118,10 @@ class BookController extends Controller
     }
 
     // ISBN-13でGoogle Books APIから書籍情報を取得
-    public function searchByIsbn(string $isbn): \Illuminate\Http\JsonResponse
+    public function searchByIsbn(string $isbn): JsonResponse
     {
         $response = Http::get('https://www.googleapis.com/books/v1/volumes', [
-            'q' => 'isbn:' . $isbn,
+            'q' => 'isbn:'.$isbn,
             'key' => config('services.google_books.api_key'),
         ]);
 
