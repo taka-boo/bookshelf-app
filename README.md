@@ -8,108 +8,7 @@
 
 ## ER図
 
-```mermaid
-erDiagram
-    users ||--o{ books : "登録"
-    users ||--o{ reviews : "投稿"
-    users ||--o{ favorites : "お気に入り"
-    users ||--o{ review_likes : "いいね"
-    users ||--o{ reading_plans : "計画"
-    users ||--o{ notifications : "受信"
-    books ||--o{ reviews : "レビュー"
-    books ||--o{ book_genre : "分類"
-    books ||--o{ favorites : "お気に入り"
-    books ||--o{ reading_plans : "計画対象"
-    genres ||--o{ book_genre : "分類"
-    reviews ||--o{ review_likes : "いいね"
-
-    users {
-        bigint id PK
-        varchar name
-        varchar email UK
-        timestamp email_verified_at
-        varchar password
-        varchar remember_token
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    books {
-        bigint id PK
-        varchar title
-        varchar author
-        varchar isbn UK
-        date published_date
-        text description
-        varchar image_url
-        bigint user_id FK
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    genres {
-        bigint id PK
-        varchar name UK
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    book_genre {
-        bigint id PK
-        bigint book_id FK
-        bigint genre_id FK
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    reviews {
-        bigint id PK
-        bigint user_id FK
-        bigint book_id FK
-        int rating
-        text comment
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    favorites {
-        bigint id PK
-        bigint user_id FK
-        bigint book_id FK
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    review_likes {
-        bigint id PK
-        bigint user_id FK
-        bigint review_id FK
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    reading_plans {
-        bigint id PK
-        bigint user_id FK
-        bigint book_id FK
-        date target_date
-        varchar status
-        timestamp completed_at
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    notifications {
-        uuid id PK
-        varchar type
-        varchar notifiable_type
-        bigint notifiable_id
-        text data
-        timestamp read_at
-        timestamp created_at
-        timestamp updated_at
-    }
-```
+![ER図](bookshelf-app-er.drawio.png)
 
 ## 環境構築手順
 
@@ -122,13 +21,10 @@ cd bookshelf-app
 
 ### 2. 環境変数を設定
 
-```bash
 cp .env.example .env
-```
-
-`.env`ファイルに以下を追加してください。
-
-Google Books APIキーは [Google Cloud Console](https://console.cloud.google.com) で Books API を有効化し、認証情報から取得してください。
+.envファイルに以下を追加してください。
+GOOGLE_BOOKS_API_KEY=あなたのAPIキー
+Google Books APIキーは Google Cloud Console で...
 
 ### 3. Dockerコンテナを起動
 
