@@ -53,17 +53,17 @@ class ReviewController extends Controller
     }
 
     // レビューへのいいねトグル
-    public function like(Review $review): View
+    public function like(Review $review): RedirectResponse
     {
         $user = auth()->user();
 
         if ($review->likedByUsers()->where('user_id', $user->id)->exists()) {
             $review->likedByUsers()->detach($user->id);
+            return back()->with('removed', 'いいねを外しました。');
         } else {
             $review->likedByUsers()->attach($user->id);
+            return back()->with('success', 'いいねしました。');
         }
-
-        return back()->with('success', 'いいねを更新しました。');
     }
 
     // PG10: お気に入り一覧
@@ -75,17 +75,17 @@ class ReviewController extends Controller
     }
 
     // お気に入りトグル（追加/解除）
-    public function favoriteToggle(Book $book): View
+    public function favoriteToggle(Book $book): RedirectResponse
     {
         $user = auth()->user();
 
         if ($user->favoriteBooks()->where('book_id', $book->id)->exists()) {
             $user->favoriteBooks()->detach($book->id);
+            return back()->with('removed', 'お気に入りを外しました。');
         } else {
             $user->favoriteBooks()->attach($book->id);
+            return back()->with('success', 'お気に入りに追加しました。');
         }
-
-        return back()->with('success', 'お気に入りを更新しました。');
     }
 
     // PG11: ランキング
