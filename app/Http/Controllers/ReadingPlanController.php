@@ -78,7 +78,7 @@ class ReadingPlanController extends Controller
         return redirect()->route('reading-plans.index')->with('success', '読書計画を削除しました。');
     }
 
-    /** 読書計画の詳細を表示する **/
+    /** 読書計画を読了状態にする **/
     public function complete(ReadingPlan $readingPlan): RedirectResponse
     {
         $this->authorize('complete', $readingPlan);

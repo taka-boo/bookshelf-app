@@ -4,6 +4,7 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use App\Models\Book;
+use App\Models\ReadingPlan;
 use App\Models\Review;
 use App\Policies\BookPolicy;
 use App\Policies\ReadingPlanPolicy;
