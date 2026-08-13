@@ -1,4 +1,4 @@
-# BookShelf 書籍レビューアプリ
+# プロジェクト名：BookShelf 書籍レビューアプリ
 
 ## 概要
 
@@ -88,6 +88,10 @@ sail npm run dev
 | Google Books API      | ISBN検索                  |
 | PHPUnit               | テスト（カバレッジ97.1%） |
 
+## 作成者
+
+綾部 貴之
+
 ## APIエンドポイント一覧
 
 ### 読み取り系（認証不要）
@@ -112,10 +116,6 @@ sail artisan test
 sail artisan test --coverage
 ```
 
-## 作成者
-
-綾部 貴之
-
 ## 開発環境URL
 
-http://localhost
+http://localhost/books

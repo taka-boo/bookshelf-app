@@ -47,7 +47,7 @@ class BookCrudTest extends TestCase
             'author' => '',
         ]);
 
-        $response->assertSessionHasErrors(['title', 'author', 'isbn', 'published_date', 'genres']);
+        $response->assertSessionHasErrors(['title', 'author', 'genres']);
         $this->assertDatabaseCount('books', 0);
     }
 

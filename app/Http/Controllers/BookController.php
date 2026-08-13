@@ -52,8 +52,11 @@ class BookController extends Controller
 
         $books = $query->paginate(10)->withQueryString();
         $genres = Genre::orderBy('name')->get();
+        $favoriteBookIds = auth()->check()
+            ? auth()->user()->favoriteBooks()->pluck('books.id')->toArray()
+            : [];
 
-        return view('books.index', compact('books', 'genres'));
+        return view('books.index', compact('books', 'genres', 'favoriteBookIds'));
     }
 
     // PG02: 書籍詳細
@@ -114,7 +117,7 @@ class BookController extends Controller
 
         $book->delete();
 
-        return redirect()->route('books.index')->with('success', '書籍を削除しました。');
+        return redirect()->route('books.index')->with('removed', '書籍を削除しました。');
     }
 
     // ISBN-13でGoogle Books APIから書籍情報を取得

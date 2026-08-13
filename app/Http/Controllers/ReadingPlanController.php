@@ -75,7 +75,7 @@ class ReadingPlanController extends Controller
 
         $readingPlan->delete();
 
-        return redirect()->route('reading-plans.index')->with('success', '読書計画を削除しました。');
+        return redirect()->route('reading-plans.index')->with('removed', '読書計画を削除しました。');
     }
 
     /** 読書計画を読了状態にする **/

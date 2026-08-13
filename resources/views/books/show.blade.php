@@ -7,37 +7,6 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('success'))
-                <div id="flash-message"
-                    class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded shadow-lg transition-opacity duration-700">
-                    {{ session('success') }}
-                </div>
-                <script>
-                    setTimeout(function () {
-                        var el = document.getElementById('flash-message');
-                        if (el) {
-                            el.classList.add('opacity-0');
-                            setTimeout(function () { el.remove(); }, 700);
-                        }
-                    }, 2500);
-                </script>
-            @endif
-
-            @if (session('removed'))
-                <div id="flash-message-removed"
-                    class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg transition-opacity duration-700">
-                    {{ session('removed') }}
-                </div>
-                <script>
-                    setTimeout(function () {
-                        var el = document.getElementById('flash-message-removed');
-                        if (el) {
-                            el.classList.add('opacity-0');
-                            setTimeout(function () { el.remove(); }, 700);
-                        }
-                    }, 2500);
-                </script>
-            @endif
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">

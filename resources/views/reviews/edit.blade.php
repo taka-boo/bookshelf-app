@@ -35,7 +35,8 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">コメント</label>
+                            <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">コメント <span
+                                    class="text-red-500">*</span></label>
                             <textarea name="comment" id="comment" rows="4"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('comment', $review->comment) }}</textarea>
                             @error('comment')

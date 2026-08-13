@@ -85,6 +85,7 @@ Route::middleware('auth')->group(function () {
     /* PG14: 通知一覧 */
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::post('/notifications/{id}/unread', [NotificationController::class, 'unread'])->name('notifications.unread');
 
 });
 

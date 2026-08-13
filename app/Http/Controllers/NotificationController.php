@@ -34,4 +34,22 @@ class NotificationController extends Controller
         return redirect()->route('notifications.index')
             ->with('success', '通知を既読にしました。');
     }
+
+    /**
+     * 指定した通知を未読に戻す
+     */
+    public function unread(string $id): RedirectResponse
+    {
+        $notification = auth()->user()
+            ->notifications
+            ->where('id', $id)
+            ->first();
+
+        if ($notification) {
+            $notification->update(['read_at' => null]);
+        }
+
+        return redirect()->route('notifications.index')
+            ->with('removed', '通知を未読に戻しました。');
+    }
 }

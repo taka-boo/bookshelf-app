@@ -37,6 +37,10 @@ class GenreController extends Controller
     {
         Genre::create($request->validated());
 
+        if ($request->query('from') === 'books.create') {
+            return redirect()->route('books.create')->with('success', 'ジャンルを登録しました。');
+        }
+
         return redirect()->route('genres.index')->with('success', 'ジャンルを登録しました。');
     }
 
@@ -63,6 +67,6 @@ class GenreController extends Controller
 
         $genre->delete();
 
-        return redirect()->route('genres.index')->with('success', 'ジャンルを削除しました。');
+        return redirect()->route('genres.index')->with('removed', 'ジャンルを削除しました。');
     }
 }

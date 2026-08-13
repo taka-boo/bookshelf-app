@@ -44,6 +44,21 @@ class NotificationTest extends TestCase
     }
 
     /** @test */
+    public function 通知を未読にできる()
+    {
+        $user = User::factory()->create();
+        $this->createNotificationForUser($user);
+
+        $notification = $user->unreadNotifications->first();
+        $notification->markAsRead(); // 先に既読にしておく
+
+        $response = $this->actingAs($user)->post("/notifications/{$notification->id}/unread");
+
+        $response->assertRedirect('/notifications');
+        $this->assertNull($notification->fresh()->read_at);
+    }
+
+    /** @test */
     public function 通知にはタイトルと本文とタイミングが含まれる()
     {
         $user = User::factory()->create();

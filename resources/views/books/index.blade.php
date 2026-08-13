@@ -7,17 +7,6 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    {{ session('error') }}
-                </div>
-            @endif
 
             <!-- 検索フォーム -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
@@ -79,7 +68,8 @@
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($books as $book)
-                                <a href="{{ route('books.show', $book) }}" class="block border rounded-lg p-4 shadow hover:shadow-lg transition cursor-pointer">
+                                <div class="border rounded-lg p-4 shadow hover:shadow-lg transition cursor-pointer relative"
+                                    onclick="if(!event.target.closest('form'))window.location='{{ route('books.show', $book) }}'">
                                     @if($book->image_url)
                                         <img src="{{ $book->image_url }}" alt="{{ $book->title }}" class="w-full h-48 object-cover mb-4 rounded">
                                     @else
@@ -112,7 +102,19 @@
                                             </span>
                                         </div>
                                     @endif
-                                </a>
+                                    @auth
+                                        <form action="{{ route('favorites.toggle', $book) }}" method="POST" class="absolute bottom-4 right-4">
+                                            @csrf
+                                            <button type="submit"
+                                                class="{{ in_array($book->id, $favoriteBookIds) ? 'text-red-500' : 'text-gray-300' }} hover:text-red-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endauth
+                                </div>
                             @endforeach
                         </div>
 

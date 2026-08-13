@@ -49,7 +49,8 @@
         <label for="published_date" class="block font-medium text-sm text-gray-700 mb-1">
             出版日
         </label>
-        <input type="date" name="published_date" id="published_date" value="{{ old('published_date', isset($book->published_date) ? $book->published_date->format('Y-m-d') : '') }}"
+        <input type="date" name="published_date" id="published_date"
+            value="{{ old('published_date', isset($book->published_date) ? $book->published_date->format('Y-m-d') : '') }}"
             class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full">
         @error('published_date')
             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -85,9 +86,15 @@
 
     <!-- ジャンル -->
     <div>
-        <label class="block font-medium text-sm text-gray-700 mb-2">
-            ジャンル <span class="text-red-500">*</span>
-        </label>
+        <div class="flex items-center justify-between mb-2">
+            <label class="block font-medium text-sm text-gray-700">
+                ジャンル <span class="text-red-500">*</span>
+            </label>
+            <a href="{{ route('genres.create', ['from' => 'books.create']) }}"
+                class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                + ジャンルを登録
+            </a>
+        </div>
         <div class="bg-gray-50 rounded-md p-4">
             @if($genres->isEmpty())
                 <p class="text-sm text-gray-500">ジャンルが登録されていません。先にジャンルを登録してください。</p>

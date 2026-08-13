@@ -16,20 +16,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<script>
-    document.addEventListener('submit', function () {
-        sessionStorage.setItem('scrollY', window.scrollY);
-    });
-
-    window.addEventListener('load', function () {
-        var y = sessionStorage.getItem('scrollY');
-        if (y !== null) {
-            window.scrollTo(0, parseInt(y));
-            sessionStorage.removeItem('scrollY');
-        }
-    });
-</script>
-
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
         @include('layouts.navigation')
@@ -43,6 +29,30 @@
             </header>
         @endif
 
+        {{-- 共通フラッシュメッセージ（青：追加・更新系） --}}
+        @if (session('success'))
+            <div id="flash-message"
+                class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded shadow-lg transition-opacity duration-700">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        {{-- 共通フラッシュメッセージ（赤：削除・解除系） --}}
+        @if (session('removed'))
+            <div id="flash-message"
+                class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg transition-opacity duration-700">
+                {{ session('removed') }}
+            </div>
+        @endif
+
+        {{-- 共通フラッシュメッセージ（赤：エラー系） --}}
+        @if (session('error'))
+            <div id="flash-message"
+                class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg transition-opacity duration-700">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Page Content -->
         <main>
             {{ $slot }}
@@ -50,6 +60,30 @@
     </div>
 
     @stack('scripts')
+
+    <script>
+        // スクロール位置の保持
+        document.addEventListener('submit', function () {
+            sessionStorage.setItem('scrollY', window.scrollY);
+        });
+
+        window.addEventListener('load', function () {
+            var y = sessionStorage.getItem('scrollY');
+            if (y !== null) {
+                window.scrollTo(0, parseInt(y));
+                sessionStorage.removeItem('scrollY');
+            }
+        });
+
+        // フラッシュメッセージのフェードアウト
+        var flash = document.getElementById('flash-message');
+        if (flash) {
+            setTimeout(function () {
+                flash.classList.add('opacity-0');
+                setTimeout(function () { flash.remove(); }, 700);
+            }, 2500);
+        }
+    </script>
 </body>
 
 </html>

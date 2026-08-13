@@ -6,6 +6,7 @@ use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Book;
 use App\Models\Review;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -49,7 +50,7 @@ class ReviewController extends Controller
         $book = $review->book;
         $review->delete();
 
-        return redirect()->route('books.show', $book)->with('success', 'レビューを削除しました。');
+        return redirect()->route('books.show', $book)->with('removed', 'レビューを削除しました。');
     }
 
     // レビューへのいいねトグル
@@ -77,19 +78,25 @@ class ReviewController extends Controller
     }
 
     // お気に入りトグル（追加/解除）
-    public function favoriteToggle(Book $book): RedirectResponse
+    public function favoriteToggle(Book $book): RedirectResponse|JsonResponse
     {
         $user = auth()->user();
 
         if ($user->favoriteBooks()->where('book_id', $book->id)->exists()) {
             $user->favoriteBooks()->detach($book->id);
-
-            return back()->with('removed', 'お気に入りを外しました。');
+            $action = 'removed';
+            $message = 'お気に入りを外しました。';
         } else {
             $user->favoriteBooks()->attach($book->id);
-
-            return back()->with('success', 'お気に入りに追加しました。');
+            $action = 'added';
+            $message = 'お気に入りに追加しました。';
         }
+
+        if (request()->expectsJson()) {
+            return response()->json(['action' => $action, 'message' => $message]);
+        }
+
+        return back()->with($action === 'removed' ? 'removed' : 'success', $message);
     }
 
     // PG11: ランキング

@@ -47,7 +47,7 @@ class BookApiTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['title', 'author', 'isbn', 'published_date', 'genres']);
+        $response->assertJsonValidationErrors(['title', 'author', 'genres']);
     }
 
     /** @test */
