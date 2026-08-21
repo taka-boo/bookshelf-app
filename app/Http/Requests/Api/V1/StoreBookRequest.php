@@ -32,4 +32,23 @@ class StoreBookRequest extends FormRequest
             'genres' => 'required|array',
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'タイトルを入力してください。',
+            'author.required' => '著者名を入力してください。',
+            'isbn.digits' => 'ISBNは13桁の数字で入力してください。',
+            'isbn.unique' => 'このISBNは既に登録されています。',
+            'published_date.date' => '正しい日付形式で入力してください。',
+            'description.max' => '説明は1000文字以内で入力してください。',
+            'image_url.url' => '正しいURL形式で入力してください。',
+            'genres.required' => 'ジャンルを1つ以上選択してください。',
+        ];
+    }
 }

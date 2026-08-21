@@ -51,6 +51,28 @@ class BookApiTest extends TestCase
     }
 
     /** @test */
+    public function 書籍登録のバリデーションエラーで日本語メッセージが返る()
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson('/api/v1/books', [
+            'title' => '',
+            'isbn' => '123',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'errors' => [
+                'title' => ['タイトルを入力してください。'],
+                'author' => ['著者名を入力してください。'],
+                'isbn' => ['ISBNは13桁の数字で入力してください。'],
+                'genres' => ['ジャンルを1つ以上選択してください。'],
+            ],
+        ]);
+    }
+
+    /** @test */
     public function 書籍を更新できる()
     {
         $user = User::factory()->create();
@@ -76,6 +98,30 @@ class BookApiTest extends TestCase
     }
 
     /** @test */
+    public function 書籍更新のバリデーションエラーで日本語メッセージが返る()
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        $book = Book::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->putJson("/api/v1/books/{$book->id}", [
+            'title' => '',
+            'isbn' => 'abc',
+            'genres' => [],
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'errors' => [
+                'title' => ['タイトルを入力してください。'],
+                'author' => ['著者名を入力してください。'],
+                'isbn' => ['ISBNは13桁の数字で入力してください。'],
+                'genres' => ['ジャンルを1つ以上選択してください。'],
+            ],
+        ]);
+    }
+
+    /** @test */
     public function 書籍を削除できる()
     {
         $user = User::factory()->create();
@@ -86,6 +132,20 @@ class BookApiTest extends TestCase
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing('books', ['id' => $book->id]);
+    }
+
+    /** @test */
+    public function 存在しないジャンル_i_dで書籍一覧を取得すると日本語メッセージが返る()
+    {
+        $response = $this->getJson('/api/v1/books?genre_id=99999&per_page=0');
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'errors' => [
+                'genre_id' => ['指定されたジャンルが見つかりません。'],
+                'per_page' => ['1ページあたりの件数は1以上で指定してください。'],
+            ],
+        ]);
     }
 
     /** @test */
