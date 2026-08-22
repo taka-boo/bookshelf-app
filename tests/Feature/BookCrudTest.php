@@ -59,7 +59,7 @@ class BookCrudTest extends TestCase
         $genre = Genre::factory()->create();
         $book = Book::factory()->create(['user_id' => $user->id]);
 
-        $this->actingAs($user)->put('/books/'.$book->id, [
+        $this->actingAs($user)->put('/books/' . $book->id, [
             'title' => '更新後のタイトル',
             'author' => '更新後の著者',
             'isbn' => $book->isbn,
@@ -81,7 +81,7 @@ class BookCrudTest extends TestCase
         $user = User::factory()->create();
         $book = Book::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user)->delete('/books/'.$book->id);
+        $response = $this->actingAs($user)->delete('/books/' . $book->id);
 
         $this->assertDatabaseMissing('books', ['id' => $book->id]);
         $response->assertRedirect('/books');
@@ -94,7 +94,7 @@ class BookCrudTest extends TestCase
         $other = User::factory()->create();
         $book = Book::factory()->create(['user_id' => $owner->id]);
 
-        $response = $this->actingAs($other)->get('/books/'.$book->id.'/edit');
+        $response = $this->actingAs($other)->get('/books/' . $book->id . '/edit');
 
         $response->assertStatus(403);
     }
@@ -107,7 +107,7 @@ class BookCrudTest extends TestCase
         $genre = Genre::factory()->create();
         $book = Book::factory()->create(['user_id' => $owner->id]);
 
-        $response = $this->actingAs($other)->put('/books/'.$book->id, [
+        $response = $this->actingAs($other)->put('/books/' . $book->id, [
             'title' => '不正な更新',
             'author' => '不正な著者',
             'isbn' => $book->isbn,
@@ -129,7 +129,7 @@ class BookCrudTest extends TestCase
         $other = User::factory()->create();
         $book = Book::factory()->create(['user_id' => $owner->id]);
 
-        $response = $this->actingAs($other)->delete('/books/'.$book->id);
+        $response = $this->actingAs($other)->delete('/books/' . $book->id);
 
         $response->assertStatus(403);
         $this->assertDatabaseHas('books', ['id' => $book->id]);
@@ -173,7 +173,7 @@ class BookCrudTest extends TestCase
         $review = Review::factory()->create(['book_id' => $book->id, 'user_id' => $otherUser->id]);
         $otherUser->favoriteBooks()->attach($book->id);
 
-        $this->actingAs($user)->delete('/books/'.$book->id);
+        $this->actingAs($user)->delete('/books/' . $book->id);
 
         $this->assertDatabaseMissing('books', ['id' => $book->id]);
         $this->assertDatabaseMissing('reviews', ['id' => $review->id]);
@@ -182,7 +182,7 @@ class BookCrudTest extends TestCase
     }
 
     /** @test */
-    public function 同じ_i_s_b_nの書籍は登録できない()
+    public function 同じISBNの書籍は登録できない()
     {
         $user = User::factory()->create();
         $genre = Genre::factory()->create();

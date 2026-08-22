@@ -90,17 +90,17 @@ sail npm run dev
 
 ## 使用技術
 
-| 技術                  | バージョン                |
-| --------------------- | ------------------------- |
-| PHP                   | 8.5                       |
-| Laravel               | 10.x                      |
-| MySQL                 | 8.4                       |
-| Docker / Laravel Sail | -                         |
-| Vite / Tailwind CSS   | -                         |
-| Laravel Fortify       | 認証                      |
-| Laravel Sanctum       | APIトークン認証           |
-| Google Books API      | ISBN検索                  |
-| PHPUnit               | テスト（カバレッジ97.0%） |
+| 技術                  | バージョン                 |
+| --------------------- | -------------------------- |
+| PHP                   | 8.5                        |
+| Laravel               | 10.x                       |
+| MySQL                 | 8.4                        |
+| Docker / Laravel Sail | -                          |
+| Vite / Tailwind CSS   | -                          |
+| Laravel Fortify       | 認証                       |
+| Laravel Sanctum       | APIトークン認証            |
+| Google Books API      | ISBN検索                   |
+| PHPUnit               | テスト（カバレッジ97.0% ） |
 
 ## 作成者
 
