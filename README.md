@@ -100,7 +100,7 @@ sail npm run dev
 | Laravel Fortify       | 認証                      |
 | Laravel Sanctum       | APIトークン認証           |
 | Google Books API      | ISBN検索                  |
-| PHPUnit               | テスト（カバレッジ97.1%） |
+| PHPUnit               | テスト（カバレッジ96.8%） |
 
 ## 作成者
 
