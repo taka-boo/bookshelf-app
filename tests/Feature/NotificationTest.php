@@ -78,4 +78,22 @@ class NotificationTest extends TestCase
 
         $response->assertRedirect('/login');
     }
+
+    /** @test */
+    public function 他人の通知を既読にしようとしても対象の通知は既読にならない()
+    {
+        // NotificationController::read()はauth()->user()->unreadNotificationsで
+        // 自分の通知のみに絞り込んでいるため、他人の通知IDを渡しても
+        // 該当レコードが見つからず何もせずにリダイレクトする(403は返らない)。
+        // ここでは「他人の通知の既読状態が変化しないこと」を検証する。
+        $owner = User::factory()->create();
+        $attacker = User::factory()->create();
+        $this->createNotificationForUser($owner);
+        $notification = $owner->unreadNotifications->first();
+
+        $response = $this->actingAs($attacker)->post("/notifications/{$notification->id}/read");
+
+        $response->assertRedirect('/notifications');
+        $this->assertNull($notification->fresh()->read_at);
+    }
 }

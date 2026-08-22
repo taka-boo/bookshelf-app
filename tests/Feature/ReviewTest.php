@@ -40,7 +40,22 @@ class ReviewTest extends TestCase
 
         $response = $this->actingAs($user)->post("/books/{$book->id}/reviews", [
             'comment' => '評価が範囲外です。',
-            'rating' => 6, // 範囲外の評価
+            'rating' => 6, // 範囲外の評価(上限超過)
+        ]);
+
+        $response->assertSessionHasErrors(['rating']);
+        $this->assertDatabaseCount('reviews', 0);
+    }
+
+    /** @test */
+    public function 評価が0だとバリデーションエラーになる()
+    {
+        $user = User::factory()->create();
+        $book = Book::factory()->create();
+
+        $response = $this->actingAs($user)->post("/books/{$book->id}/reviews", [
+            'comment' => '評価が範囲外です。',
+            'rating' => 0, // 範囲外の評価(下限未満)
         ]);
 
         $response->assertSessionHasErrors(['rating']);
@@ -97,5 +112,19 @@ class ReviewTest extends TestCase
             'id' => $review->id,
             'comment' => '不正な更新',
         ]);
+    }
+
+    /** @test */
+    public function 他人のレビューは削除できない()
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $book = Book::factory()->create();
+        $review = Review::factory()->create(['book_id' => $book->id, 'user_id' => $otherUser->id]);
+
+        $response = $this->actingAs($user)->delete("/reviews/{$review->id}");
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('reviews', ['id' => $review->id]);
     }
 }
