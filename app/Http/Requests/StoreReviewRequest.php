@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Review;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreReviewRequest extends FormRequest
 {
@@ -38,5 +40,19 @@ class StoreReviewRequest extends FormRequest
             'comment.string' => 'コメントは文字列で入力してください。',
             'comment.max' => 'コメントは1000文字以内で入力してください。',
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $book = $this->route('book');
+
+            if ($book && Review::where('user_id', auth()->id())->where('book_id', $book->id)->exists()) {
+                $validator->errors()->add('rating', 'この書籍には既にレビューを投稿済みです。');
+            }
+        });
     }
 }

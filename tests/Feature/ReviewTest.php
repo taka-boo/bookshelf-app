@@ -33,6 +33,68 @@ class ReviewTest extends TestCase
     }
 
     /** @test */
+    public function 同じ書籍に2回目のレビューは投稿できない()
+    {
+        $user = User::factory()->create();
+        $book = Book::factory()->create();
+        Review::factory()->create(['book_id' => $book->id, 'user_id' => $user->id]);
+
+        $response = $this->actingAs($user)->post("/books/{$book->id}/reviews", [
+            'comment' => '2回目の投稿です。',
+            'rating' => 3,
+        ]);
+
+        $response->assertSessionHasErrors(['rating']);
+        $this->assertSame(
+            'この書籍には既にレビューを投稿済みです。',
+            session('errors')->first('rating')
+        );
+        $this->assertDatabaseCount('reviews', 1);
+    }
+
+    /** @test */
+    public function 別のユーザーであれば同じ書籍にレビューできる()
+    {
+        $book = Book::factory()->create();
+        $existingReviewer = User::factory()->create();
+        Review::factory()->create(['book_id' => $book->id, 'user_id' => $existingReviewer->id]);
+
+        $anotherUser = User::factory()->create();
+        $response = $this->actingAs($anotherUser)->post("/books/{$book->id}/reviews", [
+            'comment' => '別ユーザーからのレビューです。',
+            'rating' => 4,
+        ]);
+
+        $response->assertRedirect("/books/{$book->id}");
+        $this->assertDatabaseHas('reviews', [
+            'book_id' => $book->id,
+            'user_id' => $anotherUser->id,
+        ]);
+        $this->assertDatabaseCount('reviews', 2);
+    }
+
+    /** @test */
+    public function 同じユーザーでも別の書籍にはレビューできる()
+    {
+        $user = User::factory()->create();
+        $firstBook = Book::factory()->create();
+        Review::factory()->create(['book_id' => $firstBook->id, 'user_id' => $user->id]);
+
+        $secondBook = Book::factory()->create();
+        $response = $this->actingAs($user)->post("/books/{$secondBook->id}/reviews", [
+            'comment' => '別の書籍へのレビューです。',
+            'rating' => 5,
+        ]);
+
+        $response->assertRedirect("/books/{$secondBook->id}");
+        $this->assertDatabaseHas('reviews', [
+            'book_id' => $secondBook->id,
+            'user_id' => $user->id,
+        ]);
+        $this->assertDatabaseCount('reviews', 2);
+    }
+
+    /** @test */
     public function 評価が範囲外だとバリデーションエラーになる()
     {
         $user = User::factory()->create();
